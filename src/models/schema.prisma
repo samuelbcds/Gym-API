@@ -13,3 +13,172 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserRole {
+  VISITOR
+  CUSTOMER
+  PERSONAL
+  ADMIN
+}
+
+enum PlanStatus {
+  ACTIVE
+  INACTIVE
+  CANCELLED
+  PENDING
+}
+
+enum ExerciseType {
+  CARDIO
+  STRENGTH
+  FLEXIBILITY
+  FUNCTIONAL
+}
+
+enum MuscleGroup {
+  CHEST
+  BACK
+  LEGS
+  ARMS
+  SHOULDERS
+  CORE
+  FULL_BODY
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  uuid      String   @unique @default(uuid())
+  email     String   @unique
+  hash      String
+  salt      String
+  name      String
+  phone     String?
+  role      UserRole @default(VISITOR)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  visitor  Visitor?
+  customer Customer?
+  personal Personal?
+  admin    Admin?
+
+  @@index([email])
+  @@index([role])
+  @@index([isActive])
+  @@map("users")
+}
+
+model Visitor {
+  id     Int  @id @default(autoincrement())
+  userId Int  @unique
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("visitors")
+}
+
+model Customer {
+  id        Int       @id @default(autoincrement())
+  userId    Int       @unique
+  birthDate DateTime?
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan     Plan?     @relation(fields: [planid], references: [id])
+  planid   Int?
+  workouts Workout[]
+
+  @@map("customers")
+}
+
+model Personal {
+  id                  Int            @id @default(autoincrement())
+  userId              Int            @unique
+  exerciseSpecialties ExerciseType[]
+  user                User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdWorkouts     Workout[]      @relation("WorkoutCreator")
+
+  @@map("personals")
+}
+
+model Admin {
+  id     Int  @id @default(autoincrement())
+  userId Int  @unique
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("admins")
+}
+
+model Plan {
+  id         Int        @id @default(autoincrement())
+  uuid       String     @unique @default(uuid())
+  customerId Int        @unique
+  status     PlanStatus @default(PENDING)
+  startDate  DateTime?
+  endDate    DateTime?
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  deletedAt  DateTime?
+
+  customers Customer[]
+
+  @@index([status])
+  @@index([startDate])
+  @@index([endDate])
+  @@map("plans")
+}
+
+model Workout {
+  id          Int      @id @default(autoincrement())
+  uuid        String   @unique @default(uuid())
+  name        String
+  description String?
+  personalId  Int?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  personal  Personal?         @relation("WorkoutCreator", fields: [personalId], references: [id])
+  exercises WorkoutExercise[]
+  customers Customer[]
+
+  @@index([personalId])
+  @@map("workouts")
+}
+
+model Exercise {
+  id          Int           @id @default(autoincrement())
+  uuid        String        @unique @default(uuid())
+  name        String
+  description String
+  videoUrl    String?
+  type        ExerciseType
+  muscleGroup MuscleGroup[]
+  isActive    Boolean       @default(true)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  workoutExercises WorkoutExercise[]
+
+  @@index([type])
+  @@index([muscleGroup])
+  @@index([isActive])
+  @@map("exercises")
+}
+
+model WorkoutExercise {
+  id         Int      @id @default(autoincrement())
+  workoutId  Int
+  exerciseId Int
+  sets       Int
+  reps       Int
+  order      Int
+  notes      String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  workout  Workout  @relation(fields: [workoutId], references: [id], onDelete: Cascade)
+  exercise Exercise @relation(fields: [exerciseId], references: [id])
+
+  @@unique([workoutId, exerciseId])
+  @@index([workoutId])
+  @@index([order])
+  @@map("workout_exercises")
+}
