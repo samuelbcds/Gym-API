@@ -3,7 +3,6 @@ import * as fs from "fs";
 import * as path from "path";
 import configDotenv from "./dotenv";
 
-
 configDotenv();
 
 (() => {
@@ -24,7 +23,7 @@ configDotenv();
         type: "pkcs8",
         format: "pem",
         cipher: "aes-256-cbc",
-        passphrase: passphrase
+        passphrase: passphrase,
       },
     });
 
@@ -40,12 +39,11 @@ configDotenv();
     fs.writeFileSync(publicKeyPath, keyPair.publicKey);
     fs.writeFileSync(privateKeyPath, keyPair.privateKey);
 
-    if (process.platform !== 'win32') {
+    if (process.platform !== "win32") {
       fs.chmodSync(privateKeyPath, 0o600);
     }
 
     console.log("Chaves geradas com sucesso!");
-
   } catch (error) {
     console.error("Erro ao gerar as chaves:", error);
     process.exit(1);
