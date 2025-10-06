@@ -36,6 +36,7 @@ Exemplos de escopos para este projeto:
 - **prisma**: Schema do Prisma e migrações
 - **config**: Configurações do projeto
 - **middleware**: Middlewares
+- **types**: Types
 
 ## Exemplos
 
