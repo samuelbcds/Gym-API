@@ -38,6 +38,21 @@ class UserRepository {
       },
     });
   }
+
+  async findUserByEmail(email: string) {
+    return prisma.user.findUnique({
+      where: { email },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        hash: true,
+        salt: true,
+        isActive: true,
+      },
+    });
+  }
 }
 
 export default new UserRepository();
