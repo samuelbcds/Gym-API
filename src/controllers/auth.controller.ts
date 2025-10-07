@@ -9,7 +9,7 @@ class AuthController {
     try {
       const { email, password } = handleZodValidation(authSchema.login, req.body);
 
-      const user = await userRepository.findUserByEmail(email);
+      const user = await userRepository.findUserByEmailWithCredentials(email);
 
       if (!user) {
         throw new AuthenticationError("Invalid email or password");
@@ -25,7 +25,7 @@ class AuthController {
         throw new AuthenticationError("Invalid email or password");
       }
 
-      const token = auth.generateJWT(String(user.id), user.role);
+      const token = auth.generateJWT(user.id, user.role);
 
       return res.status(200).json({
         token,
