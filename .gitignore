@@ -8,3 +8,5 @@ node_modules/
 keys/
 id_rsa_priv.pem
 id_rsa_pub.pem
+.vscode/
+.github/

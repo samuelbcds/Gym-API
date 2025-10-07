@@ -1,0 +1,54 @@
+# .editorconfig
+# EditorConfig is awesome: https://EditorConfig.org
+
+# Top-most EditorConfig file
+root = true
+
+# Universal defaults for all files
+[*]
+indent_style = space
+indent_size = 2
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+# TypeScript and JavaScript files
+[*.{ts,js,mjs,cjs}]
+indent_size = 2
+
+# JSON files (package.json, tsconfig.json, etc.)
+[*.json]
+indent_size = 2
+
+# JSONC files (configuration files with comments)
+[*.jsonc]
+indent_size = 2
+
+# Prisma schema files
+[*.prisma]
+indent_size = 2
+
+# Markdown files
+[*.md]
+trim_trailing_whitespace = false
+insert_final_newline = true
+
+# YAML files (docker-compose, CI/CD configs)
+[*.{yml,yaml}]
+indent_size = 2
+
+# Environment files
+[.env*]
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# Shell scripts
+[*.sh]
+indent_size = 2
+end_of_line = lf
+
+# Package manager lock files (do not modify)
+[{package-lock.json,yarn.lock,pnpm-lock.yaml}]
+indent_size = 2
+insert_final_newline = false
