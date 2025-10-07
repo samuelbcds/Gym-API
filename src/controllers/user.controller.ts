@@ -50,7 +50,7 @@ class UserController {
       const validatedData = handleZodValidation(userSchema.update, req.body);
       const updateData: Prisma.UserUpdateInput = validatedData;
 
-      const user = await userRepository.updateUserById(Number(token.id), updateData);
+      const user = await userRepository.updateUserById(token.id, updateData);
       return res.status(200).json(user);
     } catch (error) {
       console.error("Error trying to update user", error);
@@ -66,11 +66,10 @@ class UserController {
       return res.status(403).json({ error: "Access denied" });
     }
     try {
-      await userRepository.softDeleteUser(Number(token.id));
+      await userRepository.softDeleteUser(token.id);
       return res.status(204).send();
     } catch (error) {
       console.error("Error trying to delete user", error);
-
       const { statusCode, message } = handleHttpError(error);
       res.status(statusCode).json({ error: message });
     }
