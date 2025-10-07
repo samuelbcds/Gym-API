@@ -54,7 +54,7 @@ class UserRepository {
   /**
    * Find user by email with credentials for authentication purposes only.
    * This method explicitly includes hash and salt fields needed for password verification.
-   * @security Use ONLY for authentication - never expose these fields to API responses
+   * Use ONLY for authentication - never expose these fields to API responses
    */
   async findUserByEmailWithCredentials(email: string) {
     return prisma.user.findUnique({

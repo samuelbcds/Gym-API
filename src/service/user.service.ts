@@ -1,9 +1,9 @@
-import { UnauthorizedError, AuthenticationError } from "../utils/errors";
+import { ForbiddenError, AuthenticationError } from "../utils/errors";
 
 class UserService {
   checkIsAdmin(token: { id: string; role: string } | null) {
     if (!token || token.role !== "ADMIN") {
-      throw new UnauthorizedError("Unauthorized");
+      throw new ForbiddenError("Access denied");
     }
     return true;
   }

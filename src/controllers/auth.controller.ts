@@ -38,7 +38,6 @@ class AuthController {
       });
     } catch (error) {
       console.error("Error trying to login", error);
-
       const { statusCode, message } = handleHttpError(error);
       res.status(statusCode).json({ error: message });
     }
