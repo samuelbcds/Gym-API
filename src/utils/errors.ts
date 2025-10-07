@@ -53,13 +53,47 @@ export class ValidationError extends HttpError {
   }
 }
 
-export function handleHttpError(error: unknown) {
-  const { statusCode, message } =
-    error instanceof HttpError
-      ? { statusCode: error.statusCode, message: error.message }
-      : { statusCode: 500, message: "Internal server error" };
+export class ConflictError extends HttpError {
+  constructor(message: string = "Resource already exists") {
+    super(message, 409);
+    this.name = "ConflictError";
+  }
+}
 
-  return { statusCode, message };
+/**
+ * Type guard to check if error is a Prisma error with code property
+ */
+function isPrismaError(error: unknown): error is { code: string; meta?: { target?: string[] } } {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    typeof (error as { code: unknown }).code === "string"
+  );
+}
+
+export function handleHttpError(error: unknown) {
+  // Handle custom HTTP errors
+  if (error instanceof HttpError) {
+    return { statusCode: error.statusCode, message: error.message };
+  }
+
+  // Handle Prisma unique constraint violation (P2002)
+  if (isPrismaError(error) && error.code === "P2002") {
+    const target = error.meta?.target;
+    const field = Array.isArray(target) ? target[0] : "field";
+
+    const fieldMessages: Record<string, string> = {
+      email: "Email already in use",
+      phone: "Phone number already in use",
+    };
+
+    const message = fieldMessages[field] || `${field} already exists`;
+    return { statusCode: 409, message };
+  }
+
+  // Default internal server error
+  return { statusCode: 500, message: "Internal server error" };
 }
 
 export function handleZodValidation<T>(schema: { parse: (data: unknown) => T }, data: unknown): T {
