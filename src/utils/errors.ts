@@ -1,3 +1,5 @@
+import { ZodError } from "zod";
+
 export class HttpError extends Error {
   statusCode: number;
 
@@ -41,5 +43,35 @@ export class InternalServerError extends HttpError {
   constructor(message: string = "Internal server error") {
     super(message, 500);
     this.name = "InternalServerError";
+  }
+}
+
+export class ValidationError extends HttpError {
+  constructor(message: string = "Validation error") {
+    super(message, 400);
+    this.name = "ValidationError";
+  }
+}
+
+export function handleHttpError(error: unknown) {
+  const { statusCode, message } =
+    error instanceof HttpError
+      ? { statusCode: error.statusCode, message: error.message }
+      : { statusCode: 500, message: "Internal server error" };
+
+  return { statusCode, message };
+}
+
+export function handleZodValidation<T>(schema: { parse: (data: unknown) => T }, data: unknown): T {
+  try {
+    return schema.parse(data);
+  } catch (error) {
+    if (error instanceof ZodError) {
+      const errorMessages = error.issues
+        .map((issue) => `${issue.path.join(".")}: ${issue.message}`)
+        .join(", ");
+      throw new ValidationError(errorMessages);
+    }
+    throw error;
   }
 }
