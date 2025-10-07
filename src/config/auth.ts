@@ -3,6 +3,9 @@ import path from "node:path";
 import crypto from "node:crypto";
 
 import jsonwebtoken, { Algorithm, SignOptions, VerifyOptions } from "jsonwebtoken";
+import configDotenv from "./dotenv";
+
+configDotenv();
 
 interface PasswordHash {
   salt: string;
@@ -25,7 +28,17 @@ const KEYS_DIR = path.resolve(__dirname, "..", "..", "keys");
 const PRIV_KEY_PATH = path.join(KEYS_DIR, "id_rsa_priv.pem");
 const PUB_KEY_PATH = path.join(KEYS_DIR, "id_rsa_pub.pem");
 
-const PRIV_KEY = fs.readFileSync(PRIV_KEY_PATH, "utf-8");
+const encryptedPrivateKey = fs.readFileSync(PRIV_KEY_PATH, "utf-8");
+const passphrase = process.env.RSA_PASSPHRASE;
+if (!passphrase) {
+  throw new Error("RSA_PASSPHRASE environment variable is required");
+}
+const PRIV_KEY = crypto.createPrivateKey({
+  key: encryptedPrivateKey,
+  format: "pem",
+  passphrase: passphrase,
+});
+
 const PUB_KEY = fs.readFileSync(PUB_KEY_PATH, "utf-8");
 
 const SALT_BYTE_LENGTH = 32;
