@@ -45,8 +45,7 @@ enum MuscleGroup {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  uuid      String   @unique @default(uuid())
+  id        String   @id @default(uuid())
   email     String   @unique
   hash      String
   salt      String
@@ -69,29 +68,29 @@ model User {
 }
 
 model Visitor {
-  id     Int  @id @default(autoincrement())
-  userId Int  @unique
+  id     String  @id @default(uuid())
+  userId String  @unique
   user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("visitors")
 }
 
 model Customer {
-  id        Int       @id @default(autoincrement())
-  userId    Int       @unique
+  id        String     @id @default(uuid())
+  userId    String     @unique
   birthDate DateTime?
 
   user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   plan     Plan?     @relation(fields: [planid], references: [id])
-  planid   Int?
+  planid   String?
   workouts Workout[]
 
   @@map("customers")
 }
 
 model Personal {
-  id                  Int            @id @default(autoincrement())
-  userId              Int            @unique
+  id                  String            @id @default(uuid())
+  userId              String            @unique
   exerciseSpecialties ExerciseType[]
   user                User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdWorkouts     Workout[]      @relation("WorkoutCreator")
@@ -100,17 +99,16 @@ model Personal {
 }
 
 model Admin {
-  id     Int  @id @default(autoincrement())
-  userId Int  @unique
+  id     String  @id @default(uuid())
+  userId String  @unique
   user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("admins")
 }
 
 model Plan {
-  id         Int        @id @default(autoincrement())
-  uuid       String     @unique @default(uuid())
-  customerId Int        @unique
+  id         String     @id @default(uuid())
+  customerId String     @unique
   status     PlanStatus @default(PENDING)
   startDate  DateTime?
   endDate    DateTime?
@@ -127,11 +125,10 @@ model Plan {
 }
 
 model Workout {
-  id          Int      @id @default(autoincrement())
-  uuid        String   @unique @default(uuid())
+  id          String   @id @default(uuid())
   name        String
   description String?
-  personalId  Int?
+  personalId  String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -144,8 +141,7 @@ model Workout {
 }
 
 model Exercise {
-  id          Int           @id @default(autoincrement())
-  uuid        String        @unique @default(uuid())
+  id          String        @id @default(uuid())
   name        String
   description String
   videoUrl    String?
@@ -164,9 +160,9 @@ model Exercise {
 }
 
 model WorkoutExercise {
-  id         Int      @id @default(autoincrement())
-  workoutId  Int
-  exerciseId Int
+  id         String   @id @default(uuid())
+  workoutId  String
+  exerciseId String
   sets       Int
   reps       Int
   order      Int
