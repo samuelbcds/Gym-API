@@ -62,10 +62,8 @@ class UserController {
 
   async softDelete(req: Request, res: Response) {
     const token = req.token_user;
-    if (!token) {
-      return res.status(403).json({ error: "Access denied" });
-    }
     try {
+      userService.checkIsAuthenticated(token);
       await userRepository.softDeleteUser(token.id);
       return res.status(204).send();
     } catch (error) {

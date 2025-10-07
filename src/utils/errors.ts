@@ -11,15 +11,15 @@ export class HttpError extends Error {
   }
 }
 
-export class UnauthorizedError extends HttpError {
-  constructor(message: string = "Unauthorized") {
+export class ForbiddenError extends HttpError {
+  constructor(message: string = "Forbidden") {
     super(message, 403);
-    this.name = "UnauthorizedError";
+    this.name = "ForbiddenError";
   }
 }
 
 export class AuthenticationError extends HttpError {
-  constructor(message: string = "Access denied") {
+  constructor(message: string = "Authentication required") {
     super(message, 401);
     this.name = "AuthenticationError";
   }
