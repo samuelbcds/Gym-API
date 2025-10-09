@@ -1,5 +1,3 @@
-import { ZodError } from "zod";
-
 export class HttpError extends Error {
   statusCode: number;
 
@@ -94,18 +92,4 @@ export function handleHttpError(error: unknown) {
 
   // Default internal server error
   return { statusCode: 500, message: "Internal server error" };
-}
-
-export function handleZodValidation<T>(schema: { parse: (data: unknown) => T }, data: unknown): T {
-  try {
-    return schema.parse(data);
-  } catch (error) {
-    if (error instanceof ZodError) {
-      const errorMessages = error.issues
-        .map((issue) => `${issue.path.join(".")}: ${issue.message}`)
-        .join(", ");
-      throw new ValidationError(errorMessages);
-    }
-    throw error;
-  }
 }
