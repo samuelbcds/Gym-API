@@ -50,8 +50,8 @@ class UserService {
       }
     }
 
-    const skip = (page - 1) * limit;
-    const take = limit;
+    const skip = Math.abs(page - 1) * Math.abs(limit);
+    const take = Math.abs(limit);
 
     const orderBy = { name: "asc" as Prisma.SortOrder };
 
@@ -63,29 +63,25 @@ class UserService {
     });
   }
 
-  checkIsSelfOrAdmin(token: { id: string; role: string }, userId: string) {
-    if (!token || (token.id !== userId && token.role !== "ADMIN")) {
-      throw new ForbiddenError("Access denied");
-    }
-    return true;
-  }
   checkIsAdmin(token: { id: string; role: string }) {
-    if (!token || token.role !== "ADMIN") {
-      throw new ForbiddenError("Access denied");
+    this.checkIsAuthenticated(token);
+    if (token.role !== "ADMIN") {
+      throw new ForbiddenError();
     }
     return true;
   }
 
   checkIsPersonalTrainerOrAdmin(token: { id: string; role: string }) {
-    if (!token || (token.role !== "ADMIN" && token.role !== "PERSONAL")) {
-      throw new ForbiddenError("Access denied");
+    this.checkIsAuthenticated(token);
+    if (token.role !== "ADMIN" && token.role !== "PERSONAL") {
+      throw new ForbiddenError();
     }
     return true;
   }
 
   checkIsAuthenticated(token: { id: string; role: string }) {
     if (!token) {
-      throw new AuthenticationError("Access denied");
+      throw new AuthenticationError();
     }
     return true;
   }
