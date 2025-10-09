@@ -104,12 +104,12 @@ const swaggerDefinition = {
             type: "string",
             format: "email",
             description: "User email address",
-            example: "samuel.baltazar@example.com",
+            example: "admin@gym.com.br",
           },
           password: {
             type: "string",
             description: "User password",
-            example: "securePassword123",
+            example: "12345678",
           },
         },
       },
@@ -159,6 +159,40 @@ const swaggerDefinition = {
             minimum: 0,
             description: "Updated user age",
             example: 35,
+          },
+        },
+      },
+
+      GetUserByIdRequest: {
+        type: "object",
+        properties: {
+          userId: {
+            type: "string",
+            format: "uuid",
+            description: "User ID (UUID)",
+            example: "550e8400-e29b-41d4-a716-446655440000",
+          },
+        },
+      },
+
+      GetMeResponse: {
+        type: "object",
+        properties: {
+          id: {
+            type: "string",
+            description: "User ID (UUID)",
+            example: "550e8400-e29b-41d4-a716-446655440000",
+          },
+          name: {
+            type: "string",
+            description: "User full name",
+            example: "Samuel Baltazar",
+          },
+          email: {
+            type: "string",
+            format: "email",
+            description: "User email address",
+            example: "samuel.baltazar@example.com",
           },
         },
       },
@@ -223,6 +257,191 @@ const swaggerDefinition = {
           },
         },
       },
+      // Exercise Schemas
+      Exercise: {
+        type: "object",
+        properties: {
+          id: {
+            type: "string",
+            description: "Exercise ID (UUID)",
+            example: "550e8400-e29b-41d4-a716-446655440000",
+          },
+          name: {
+            type: "string",
+            description: "Exercise name",
+            example: "Bench Press",
+          },
+          description: {
+            type: "string",
+            description: "Exercise description",
+            example: "Lie on a flat bench with a barbell and push the weight upward",
+          },
+          videoURL: {
+            type: "string",
+            description: "URL to exercise demonstration video",
+            example: "https://example.com/bench-press.mp4",
+            nullable: true,
+          },
+          type: {
+            type: "string",
+            enum: ["STRENGTH", "CARDIO", "FLEXIBILITY", "BALANCE", "FUNCTIONAL"],
+            description: "Exercise type",
+            example: "STRENGTH",
+          },
+          muscleGroup: {
+            type: "array",
+            items: {
+              type: "string",
+              enum: ["CHEST", "BACK", "SHOULDERS", "ARMS", "ABDOMINALS", "LEGS", "FULL_BODY"],
+            },
+            description: "Muscles targeted by this exercise",
+            example: ["CHEST", "ARMS"],
+          },
+          isActive: {
+            type: "boolean",
+            description: "Whether the exercise is active or soft-deleted",
+            example: true,
+          },
+          createdAt: {
+            type: "string",
+            format: "date-time",
+            description: "When the exercise was created",
+          },
+          updatedAt: {
+            type: "string",
+            format: "date-time",
+            description: "When the exercise was last updated",
+          },
+        },
+      },
+      CreateExercise: {
+        type: "object",
+        required: ["name", "description", "type", "muscleWorked"],
+        properties: {
+          name: {
+            type: "string",
+            minLength: 3,
+            description: "Exercise name",
+            example: "Bench Press",
+          },
+          description: {
+            type: "string",
+            minLength: 10,
+            description: "Exercise description",
+            example: "Lie on a flat bench with a barbell and push the weight upward",
+          },
+          videoUrl: {
+            type: "string",
+            format: "uri",
+            description: "URL to exercise demonstration video (optional)",
+            example: "https://example.com/bench-press.mp4",
+            nullable: true,
+          },
+          type: {
+            type: "string",
+            enum: ["STRENGTH", "CARDIO", "FLEXIBILITY", "BALANCE", "FUNCTIONAL"],
+            description: "Exercise type",
+            example: "STRENGTH",
+          },
+          muscleGroup: {
+            type: "array",
+            items: {
+              type: "string",
+              enum: ["CHEST", "BACK", "SHOULDERS", "ARMS", "ABDOMINALS", "LEGS", "FULL_BODY"],
+            },
+            description: "Muscles targeted by this exercise",
+            example: ["CHEST", "ARMS"],
+          },
+        },
+      },
+      UpdateExercise: {
+        type: "object",
+        properties: {
+          name: {
+            type: "string",
+            minLength: 3,
+            description: "Updated exercise name",
+            example: "Incline Bench Press",
+          },
+          description: {
+            type: "string",
+            minLength: 10,
+            description: "Updated exercise description",
+            example: "Lie on an inclined bench with a barbell and push the weight upward",
+          },
+          videoUrl: {
+            type: "string",
+            format: "uri",
+            description: "Updated URL to exercise demonstration video",
+            example: "https://example.com/incline-bench-press.mp4",
+            nullable: true,
+          },
+          type: {
+            type: "string",
+            enum: ["STRENGTH", "CARDIO", "FLEXIBILITY", "BALANCE", "FUNCTIONAL"],
+            description: "Updated exercise type",
+            example: "STRENGTH",
+          },
+          muscleGroup: {
+            type: "array",
+            items: {
+              type: "string",
+              enum: ["CHEST", "BACK", "SHOULDERS", "ARMS", "ABDOMINALS", "LEGS", "FULL_BODY"],
+            },
+            description: "Updated muscles targeted by this exercise",
+            example: ["CHEST", "SHOULDERS"],
+          },
+        },
+      },
+      SearchExercisesRequest: {
+        type: "object",
+        properties: {
+          id: {
+            type: "string",
+            format: "uuid",
+            description: "Filter by exercise ID",
+            example: "550e8400-e29b-41d4-a716-446655440000",
+          },
+          name: {
+            type: "string",
+            description: "Filter by exercise name (partial match, case insensitive)",
+            example: "bench",
+          },
+          type: {
+            type: "string",
+            enum: ["STRENGTH", "CARDIO", "FLEXIBILITY", "BALANCE", "FUNCTIONAL"],
+            description: "Filter by exercise type",
+            example: "STRENGTH",
+          },
+          muscleGroup: {
+            type: "array",
+            items: {
+              type: "string",
+              enum: ["CHEST", "BACK", "SHOULDERS", "ARMS", "ABDOMINALS", "LEGS", "FULL_BODY"],
+            },
+            description: "Filter by targeted muscle groups",
+            example: ["CHEST"],
+          },
+          isActive: {
+            type: "boolean",
+            description: "Filter by active status (default: true)",
+            example: true,
+          },
+          page: {
+            type: "integer",
+            minimum: 1,
+            description: "Page number for pagination (default: 1)",
+            example: 1,
+          },
+          limit: {
+            type: "integer",
+            minimum: 1,
+            maximum: 100,
+            description: "Number of results per page (default: 100)",
+            example: 20,
+          },
+        },
+      },
     },
   },
   tags: [
@@ -233,6 +452,10 @@ const swaggerDefinition = {
     {
       name: "Users",
       description: "User management endpoints",
+    },
+    {
+      name: "Exercises",
+      description: "Exercise management endpoints",
     },
   ],
 };
