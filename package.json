@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "tsc --outDir dist",
     "start": "npx ts-node-dev --transpile-only --no-notify server.ts",
     "keys": "npx ts-node src/config/generateKeyPair.ts",
     "format": "prettier --write \"src/**/*.ts\" \"*.ts\"",
