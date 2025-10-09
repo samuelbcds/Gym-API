@@ -13,7 +13,8 @@
     "prepare": "husky"
   },
   "prisma": {
-    "schema": "src/models/schema.prisma"
+    "schema": "src/models/schema.prisma",
+    "seed": "ts-node src/models/seeders/seed.ts"
   },
   "keywords": [],
   "author": "",
