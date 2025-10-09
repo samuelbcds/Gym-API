@@ -5,6 +5,10 @@
   "main": "index.js",
   "scripts": {
     "start": "npx ts-node-dev --transpile-only --no-notify server.ts",
+    "build": "tsc",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "test:coverage": "vitest run --coverage",
     "keys": "npx ts-node src/config/generateKeyPair.ts",
     "format": "prettier --write \"src/**/*.ts\" \"*.ts\"",
     "format:check": "prettier --check \"src/**/*.ts\" \"*.ts\"",
@@ -51,6 +55,7 @@
     "prettier": "^3.6.2",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
   }
 }
