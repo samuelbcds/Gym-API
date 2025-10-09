@@ -11,6 +11,9 @@ const prisma = new PrismaClient({
 });
 
 class UserRepository {
+  findUserById(userId: string) {
+    return prisma.user.findUnique({ where: { id: userId } });
+  }
   async createUser(data: Prisma.UserCreateInput) {
     return prisma.user.create({ data });
   }
@@ -50,11 +53,31 @@ class UserRepository {
       },
     });
   }
+  async findUsers(filters?: {
+    whereCondition: Prisma.UserWhereInput;
+    skip: number;
+    take: number;
+    orderBy: Prisma.UserFindManyArgs["orderBy"];
+  }) {
+    const { whereCondition, skip, take, orderBy } = filters || {
+      whereCondition: {},
+      skip: 0,
+      take: 20,
+      orderBy: { name: "desc" },
+    };
+
+    return prisma.user.findMany({
+      where: whereCondition,
+      skip,
+      take,
+      orderBy,
+    });
+  }
 
   /**
    * Find user by email with credentials for authentication purposes only.
    * This method explicitly includes hash and salt fields needed for password verification.
-   * Use ONLY for authentication - never expose these fields to API responses
+   * Use ONLY for authentication
    */
   async findUserByEmailWithCredentials(email: string) {
     return prisma.user.findUnique({
