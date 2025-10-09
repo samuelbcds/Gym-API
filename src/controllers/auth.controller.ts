@@ -1,13 +1,12 @@
 import { Request, Response } from "express";
 import auth from "../config/auth";
-import authSchema from "../schema/auth.schema";
 import userRepository from "../repository/user.repository";
-import { AuthenticationError, handleHttpError, handleZodValidation } from "../utils/errors";
+import { AuthenticationError, handleHttpError } from "../utils/errors";
 
 class AuthController {
   async login(req: Request, res: Response) {
     try {
-      const { email, password } = handleZodValidation(authSchema.login, req.body);
+      const { email, password } = req.validatedBody as { email: string; password: string };
 
       const user = await userRepository.findUserByEmailWithCredentials(email);
 
