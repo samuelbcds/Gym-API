@@ -8,6 +8,9 @@ declare global {
         id: string;
         role: string;
       };
+      validatedQuery?: Record<string, unknown>;
+      validatedBody?: Record<string, unknown>;
+      validatedParams?: Record<string, unknown>;
     }
   }
 }
